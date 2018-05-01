@@ -15,14 +15,24 @@
 'use strict';
 
 const functions = require('firebase-functions');
+let randomExt = require('random-ext');
+// let randomInteger = randomExt.integer(99, 10);
 const {actionssdk} = require('actions-on-google');
+
+let genreData = require('./genreData.json');
+// let name = genreData['1650']['genre'];
 
 const app = actionssdk({debug: true});
 
 app.intent('actions.intent.MAIN', (conv) => {
-  conv.ask('<speak>Hi! <break time="1"/> ' +
-    'I can read out an ordinal like ' +
-    '<say-as interpret-as="ordinal">123</say-as>. Say a number.</speak>');
+  let randroll = randomExt.integer(1650, 1).toString();
+  let genreName = genreData[randroll]['genre'];
+  let genreLink = 'https://randomgenre-35e37.firebaseapp.com/' + randroll + '.mp3';
+
+  conv.ask('<speak> Hello there! Your random music genre is ' + genreName +
+    '. <break time="0.5s"/> And here is a song. <break time="0.5s"/>' +
+    '<audio src="'+ genreLink + '"></audio>' +
+    '</speak>');
 });
 
 app.intent('actions.intent.TEXT', (conv, input) => {
