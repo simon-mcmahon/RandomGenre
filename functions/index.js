@@ -15,23 +15,30 @@
 'use strict';
 
 const functions = require('firebase-functions');
-let randomExt = require('random-ext');
+// let randomExt = require('random-ext');
 // let randomInteger = randomExt.integer(99, 10);
 const {actionssdk} = require('actions-on-google');
 
-let genreData = require('./genreData.json');
+let iumaData = require('./iumaData.json');
 // let name = genreData['1650']['genre'];
+
+let randomKey = function(obj) {
+    let keys = Object.keys(obj);
+    return keys[keys.length * Math.random() << 0];
+};
 
 const app = actionssdk({debug: true});
 
 app.intent('actions.intent.MAIN', (conv) => {
-  let randroll = randomExt.integer(1650, 1).toString();
-  let genreName = genreData[randroll]['genre'];
-  let genreLink = 'https://randomgenre-35e37.firebaseapp.com/' + randroll + '.mp3';
+  let randKey = randomKey(iumaData);
+  // let randMpthree = randomExt.integer(1650, 1).toString();
+  let randList = Math.floor(Math.random()*iumaData[randKey].length);
+  let randMpthree = iumaData[randKey][randList];
+  let iumaLink = 'https://archive.org/download/' + randKey + '/' + randMpthree;
 
-  conv.ask('<speak> Hello there! Your random music genre is ' + genreName +
-    '. <break time="0.5s"/> And here is a song. <break time="0.5s"/>' +
-    '<audio src="'+ genreLink + '"></audio>' +
+  conv.ask('<speak> Hello there! Here is your random song. Enjoy. ' +
+    ' <break time="0.5s"/> ' +
+    '<audio src="'+ iumaLink + '"></audio>' +
     '</speak>');
 });
 
